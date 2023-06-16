@@ -1,0 +1,241 @@
+<head>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+</head>
+
+<div id="loading-overlay">
+  <div id="loading-spinner"></div>
+</div>
+
+<h1>TASK-GPT</h1>
+
+<div id="conversation">
+
+  {% for message in conversation %}
+
+  {% if message.role == 'user' %}
+  <div class="user-messages">
+    <p><b>You:</b></p>
+    <p style="white-space: pre-wrap">{{ message.content }}</p>
+  </div>
+
+  {% elif message.role == 'assistant' %}
+  <div class="chatbot-messages">
+    <p><b>TaskGpt:</b></p>
+    <p style="white-space: pre-wrap">{{ message.content }}</p>
+  </div>
+
+  {% elif message.role == 'tasks' %}
+  <div class="tasks-messages">
+    <form action="{% url 'chatbot:chatbot_test' %}" method="POST" id="form-task">
+      {% csrf_token %}
+      <p>{{ message.content }}</p>
+      <textarea hidden="hidden" name="task_query">{{ message.content }}</textarea>
+      <input type="submit" value="Submit">
+    </form>
+  </div>
+  {% endif %}
+
+  {% endfor %}
+</div>
+
+<form id="chat-form" method="POST">
+  {% csrf_token %}
+  <div class="container">
+    <textarea rows="3" class="centered-textarea" id="user-input" type="text" placeholder="Your message"></textarea>
+    <input type="submit" value="Send">
+  </div>
+</form>
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const chatForm = document.getElementById('chat-form');
+    const userInput = document.getElementById('user-input');
+    const conversation = document.getElementById('conversation');
+
+    const formTask = document.getElementById('form-task');
+    const log = document.getElementById('log');
+
+    const botResp = document.getElementsByClassName('chatbot-messages')
+
+    // Scroll conversation to the bottom
+    conversation.scrollTop = conversation.scrollHeight;
+
+    // Handles loading
+    function showLoading() {
+      document.getElementById('loading-overlay').style.display = 'block';
+    }
+    function hideLoading() {
+      document.getElementById('loading-overlay').style.display = 'none';
+    }
+
+    chatForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      showLoading();
+
+      const userInput = document.getElementById('user-input').value;
+
+      // Submit form using AJAX
+      jQuery.ajax({
+        type: 'POST',
+        url: "{% url 'chatbot:chatbot_test' %}",
+        data: {
+          'user_input': userInput,
+          'csrfmiddlewaretoken': '{{ csrf_token }}'
+        },
+        success: function (response) {
+          // Handle the success response
+          hideLoading();
+          // Definetly a better way to handle this response, 
+          // Would need to 
+          location.reload();
+        },
+        error: function (xhr, textStatus, error) {
+          // Handle the error response
+          hideLoading();
+          console.log("error")
+        }
+      });
+    });
+
+    // Focus on the user input field
+    userInput.focus();
+  });
+
+</script>
+
+<style>
+  body {
+    background-color: #131804;
+  }
+
+  p {
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-size: 1.5em;
+  }
+
+  h1 {
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-size: 4em;
+    margin: 25px 16px;
+    text-align: center;
+    color: white;
+  }
+
+  #conversation {
+    height: 60%;
+    border: 1px solid #000;
+    margin: 0 auto;
+    margin-bottom: 10px;
+    overflow-y: scroll;
+    background-color: #424755;
+    display: flow-root;
+    width: 80%;
+  }
+
+  .container {
+    display: flex;
+    margin: 0 20px;
+    width: 60%;
+    margin: 15px 20%;
+    height: 8%;
+  }
+
+  .container textarea {
+    flex: 1;
+    margin-right: 10px;
+    font-size: 1.5em;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    padding: 10px 50px;
+  }
+
+  .container input[type="submit"] {
+    flex-shrink: 0;
+    background: #10a37f;
+    color: #fff;
+    border: 0px;
+    padding: 8px 16px;
+    font-size: 14px;
+    cursor: pointer;
+    margin-bottom: 12px;
+    width: 200px;
+    font-size: 1.5em;
+  }
+
+  .user-messages {
+    padding: 10px;
+    background: #918962;
+    color: #fff;
+    margin: 5px 12%;
+    transition: background-color 0.3s ease;
+    padding: 6px 50px;
+  }
+
+  .tasks-messages {
+    padding: 10px;
+    background: #B07437;
+    color: #fff;
+    margin: 5px 12%;
+    transition: background-color 0.3s ease;
+    padding: 6px 50px;
+  }
+
+  .chatbot-messages {
+    padding: 10px;
+    background: #C28E63;
+    color: #fff;
+    margin: 5px 12%;
+    transition: background-color 0.3s ease;
+    padding: 6px 50px;
+  }
+
+  /* Highlight user messages on hover */
+  .user-messages:hover {
+    background-color: #37410C;
+  }
+
+  /* Highlight chatbot messages on hover */
+  .chatbot-messages:hover {
+    background-color: #C88429;
+  }
+
+  .tasks-messages:hover {
+    background-color: #8f4b06;
+  }
+
+  /* Loading animation styles */
+  #loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+    display: none;
+  }
+
+  #loading-spinner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50px;
+    height: 50px;
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    0% {
+      transform: translate(-50%, -50%) rotate(0deg);
+    }
+
+    100% {
+      transform: translate(-50%, -50%) rotate(360deg);
+    }
+  }
+</style>
