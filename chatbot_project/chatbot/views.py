@@ -23,7 +23,7 @@ def process_chatbot_response(prompts, conversation):
 
     for reply in chatbot_replies:
         conversation.append({'role': 'assistant', 'content': reply})
-    
+
     return conversation, chatbot_replies
 
 
@@ -40,15 +40,15 @@ def chatbot_view(request):
     if request.method == 'POST':
         user_input = request.POST.get('user_input')
         task_query = request.POST.get('task_query')
-
-        print(task_query, user_input)
+        task_complete = request.POST.get('task_complete_flag')
 
         if user_input is not None and not user_input.isspace() and user_input:
             if user_input.startswith('/chat'):
                 user_input = user_input.replace('/chat ', '')
 
                 if user_input:
-                    conversation.append({'role': 'user', 'content': user_input})
+                    conversation.append(
+                        {'role': 'user', 'content': f"Task: {user_input.capitalize()}"})
 
                 if not tasks:
                     prompts.append({
@@ -56,14 +56,16 @@ def chatbot_view(request):
                         'content': f"{user_input}, {config('PROMPT_1')}"
                     })
                 else:
-                    str_inp = ', '.join([f"{task['name']} - {task['progress']}" for task in tasks])
-                    
+                    str_inp = ', '.join(
+                        [f"{task['name']} - {task['progress']}" for task in tasks])
+
                     prompts.append({
                         'role': 'user',
                         'content': f"{user_input}. {config('PROMPT_2_1')} {str_inp}. {config('PROMPT_2_2')}"
                     })
 
-                conversation, chatbot_replies = process_chatbot_response(prompts, conversation)
+                conversation, chatbot_replies = process_chatbot_response(
+                    prompts, conversation)
 
                 request.session['conversation'] = conversation
 
@@ -72,34 +74,41 @@ def chatbot_view(request):
                     'chatbot_replies': chatbot_replies,
                     'conversation': conversation
                 }
-
-                print("reached 1")
                 return render(request, 'chat.html', context=context)
 
             else:
                 print("Attempting to set task")
 
                 if user_input:
-                    conversation.append({'role': 'tasks', 'content': user_input})
+                    conversation.append(
+                        {'role': 'tasks', 'content': f"Task: {user_input.capitalize()}"})
 
                 tasks.append({'name': user_input, 'progress': 'in progress'})
 
                 request.session['tasks'] = tasks
                 request.session['conversation'] = conversation
 
-                context = {'user_input': user_input, 'conversation': conversation}
+                context = {'user_input': user_input,
+                           'conversation': conversation}
                 print(f"reached 3 - {conversation}")
                 return render(request, 'chat.html', context=context)
 
-        else:
-            request.session['tasks'] = [
-                i for i in tasks if not (i['name'] == task_query)
-            ]
+        elif task_complete:
+            for task in tasks:
+                if task['name'] == task_complete[6:].lower():
+                    task['progress'] = 'complete'
 
-            print(tasks)
+            request.session['tasks'] = tasks
 
             context = {'conversation': conversation}
-            print("reached 4")
+            return render(request, 'chat.html', context=context)
+
+        else:
+            request.session['tasks'] = [
+                i for i in tasks if not (i['name'] == task_query[6:].lower())
+            ]
+
+            context = {'conversation': conversation}
             return render(request, 'chat.html', context=context)
 
     else:
@@ -112,7 +121,8 @@ def chatbot_view(request):
                 'content': config('PROMPT_3')
             })
 
-            conversation, chatbot_replies = process_chatbot_response(prompts, conversation)
+            conversation, chatbot_replies = process_chatbot_response(
+                prompts, conversation)
 
             prompts.extend(conversation)
 

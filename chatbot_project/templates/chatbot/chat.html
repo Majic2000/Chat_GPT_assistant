@@ -26,16 +26,24 @@
   </div>
 
   {% elif message.role == 'tasks' %}
-  <div class="tasks-messages">
-    <form action="{% url 'chatbot:chatbot_test' %}" method="POST" id="form-task">
+  <div class="tasks-messages" id="form-task">
+
+    <p id="task-title">{{ message.content }}</p>
+
+    <form action="{% url 'chatbot:chatbot_test' %}" method="POST">
       {% csrf_token %}
-      <p>{{ message.content }}</p>
-      <textarea hidden="hidden" name="task_query">{{ message.content }}</textarea>
-      <input type="submit" value="Submit">
+      <textarea hidden="hidden" name="task_complete_flag">{{ message.content }}</textarea>
+      <input id="del-task" type="submit" value="FINISH">
     </form>
+
+    <!-- <form action="{% url 'chatbot:chatbot_test' %}" method="POST">
+      {% csrf_token %}
+      <textarea hidden="hidden" name="task_query">{{ message.content }}</textarea>
+      <input id="del-task" type="submit" value="DELETE" style="background-color: #e3730a;">
+    </form> -->
+
   </div>
   {% endif %}
-
   {% endfor %}
 </div>
 
@@ -190,6 +198,24 @@
     padding: 6px 50px;
   }
 
+  #form-task {
+    display: flex;
+    align-items: stretch;
+    margin-top: 10px;
+  }
+
+  #form-task form {
+    flex: 0;
+    align-self: center;
+    margin: 10px 5px;
+    padding: 0 10px;
+  }
+
+  #task-title {
+    flex: 1;
+    font-size: 2em;
+  }
+
   /* Highlight user messages on hover */
   .user-messages:hover {
     background-color: #37410C;
@@ -203,6 +229,33 @@
   .tasks-messages:hover {
     background-color: #8f4b06;
   }
+
+  /* Target the input[type="submit"] element */
+  #del-task {
+    background-color: #4CAF50;
+    color: white;
+    padding: 15px 25px;
+    border: none;
+    cursor: pointer;
+    margin-left: 4%;
+    font-size: 1.2em;
+  }
+
+  /* #del-task .del-button {
+    background-color: #8f4b06;
+  } */
+
+  /* Hover effect */
+  #del-task:hover {
+    background-color: #45a049;
+  }
+
+  /* Active effect */
+  #del-task:active {
+    background-color: #3e8e41;
+    transform: translateY(2px);
+  }
+
 
   /* Loading animation styles */
   #loading-overlay {
