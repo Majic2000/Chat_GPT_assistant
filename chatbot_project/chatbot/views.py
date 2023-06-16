@@ -8,8 +8,6 @@ from pathlib import Path
 
 def process_chatbot_response(prompts, conversation):
 
-    print(f'prompts in pcr - {prompts}')
-
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=prompts,
