@@ -13,6 +13,6 @@ To keep things lightweight and efficient, the system employs functional views, s
 IMPROVEMENTS:
 1. Move session-related operations to a separate function: Instead of checking session variables using if statements in multiple places, should create a separate function to handle session operations. This will make the code cleaner and more maintainable.
 2. Refactor the POST request handling: Use a single conditional block to handle the different POST requests. This will reduce code duplication and make it easier to manage different scenarios.
-3. Utilize helper functions: Extract common functionalities into helper functions to improve code readability and maintainability. For example, you can create a function to process chatbot responses and another function to render the chat template.
+3. Utilize helper functions: Extract common functionalities into helper functions to improve code readability and maintainability. 
 4. Remove unnecessary print statements: Clean up the code by removing debugging print statements that are no longer needed.
 5. Change style: Use JS to change the button style once user has completed a task.
