@@ -16,4 +16,6 @@ IMPROVEMENTS:
 3. Utilize helper functions: Extract common functionalities into helper functions to improve code readability and maintainability. 
 4. Remove unnecessary print statements: Clean up the code by removing debugging print statements that are no longer needed.
 5. Change style: Use JS to change the button style once user has completed a task.
-6. Refactor the directory to fit industry standards
+6. Split up chat.html. Currently holds js, html, css, distribute it appropiately to files for ease of future development
+7. Refactor the directory to fit industry standards
+
