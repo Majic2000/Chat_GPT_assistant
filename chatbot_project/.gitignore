@@ -1,5 +1,6 @@
 .env
-__pycache__/
+__pycache__
 __init__
 lol.html
 core/
+db.sqlite3
