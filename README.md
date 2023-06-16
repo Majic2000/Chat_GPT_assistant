@@ -1,4 +1,4 @@
-# Chat_GPT_assistant
+# Task-GPT
 
 Proof-of-concept (PoC) application called "Task-GPT" within the Django framework, integrating it with ChatGPT 3.5 and utilizing prompt engineering techniques. 
 
