@@ -19,3 +19,11 @@ IMPROVEMENTS:
 6. Split up chat.html. Currently holds js, html, css, distribute it appropiately to files for ease of future development
 7. Refactor the directory to fit industry standards
 
+
+To run on your machine:
+1. Create a virtual env using python
+2. While in the root folder call: pip -r requirements.txt
+3. In root project folder call: python manage.py runserver
+4. connect on your local browser: 127.0.0.1:PORT/chatbot (PORT being the port assigned, check terminal)
+5. Play around! Note there may exist some bugs as it is a PoC, however overall should work.
+
