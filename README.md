@@ -1,4 +1,4 @@
-# Task-GPT
+# Task-GPT -
 
 Proof-of-concept (PoC) application called "Task-GPT" within the Django framework, integrating it with ChatGPT 3.5 and utilizing prompt engineering techniques. 
 
@@ -10,7 +10,7 @@ Here are some key features of Task-GPT:
 And much more! 
 To keep things lightweight and efficient, the system employs functional views, server-local session data, and avoids the need for a comprehensive SQL backend. After all, simplicity is key when it comes to managing daily tasks. 
 
-IMPROVEMENTS:
+# Improvements:
 1. Move session-related operations to a separate function: Instead of checking session variables using if statements in multiple places, should create a separate function to handle session operations. This will make the code cleaner and more maintainable.
 2. Refactor the POST request handling: Use a single conditional block to handle the different POST requests. This will reduce code duplication and make it easier to manage different scenarios.
 3. Utilise helper functions: Extract common functionalities into helper functions to improve code readability and maintainability. 
@@ -20,7 +20,7 @@ IMPROVEMENTS:
 7. Refactor the directory to fit industry standards
 
 
-To run on your machine:
+# How to run:
 1. Create a virtual env using python
 2. While in the root folder call: pip -r requirements.txt
 3. In root project folder call: python manage.py runserver
